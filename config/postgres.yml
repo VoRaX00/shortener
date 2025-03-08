@@ -1,0 +1,5 @@
+host: "localhost"
+port: 6111
+dbname: "shortener"
+user: "postgres"
+ssl_mode: "disable"

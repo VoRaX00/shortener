@@ -1,0 +1,7 @@
+host: "localhost"
+port: 6111
+dbname: "shortener"
+user: "postgres"
+ssl_mode: "disable"
+is_drop: false
+migrations_path: "./migrations"

@@ -3,19 +3,18 @@ package handler
 import "net/http"
 
 type Handler struct {
-	mux *http.ServeMux
+	mux     *http.ServeMux
+	service ShortenerService
 }
 
-func New() *Handler {
+func New(service ShortenerService) *Handler {
 	return &Handler{
-		mux: http.NewServeMux(),
+		mux:     http.NewServeMux(),
+		service: service,
 	}
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.mux.ServeHTTP(w, r)
-}
-
-func (h *Handler) InitRoutes() {
 	h.mux.HandleFunc("/", h.mainPage)
+	h.mux.ServeHTTP(w, r)
 }

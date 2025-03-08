@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:15
+    container_name: shortener
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1324
+      POSTGRES_DB: shortener
+      PG_DATA: /var/lib/postgres/data/
+    ports:
+      - 6111:5432
+    volumes:
+      - postgres_volume_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_volume_data:
