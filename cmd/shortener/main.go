@@ -34,7 +34,6 @@ const (
 
 func main() {
 	logger := setupLogger(loggerConfig)
-
 	repository := setupPostgres(postgresConfig)
 	defer func() {
 		err := repository.Stop()
