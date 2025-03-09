@@ -26,7 +26,7 @@ const (
 )
 
 const (
-	postgresConfig = "./config/postgres.yml"
+	postgresConfig = "./config/postgres_test.yml"
 	serverConfig   = "./config/server.yml"
 	loggerConfig   = "./config/logger.yml"
 	migrations     = "./migrations"
