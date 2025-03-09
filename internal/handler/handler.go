@@ -1,15 +1,20 @@
 package handler
 
-import "net/http"
+import (
+	"log/slog"
+	"net/http"
+)
 
 type Handler struct {
 	mux     *http.ServeMux
+	log     *slog.Logger
 	service ShortenerService
 }
 
-func New(service ShortenerService) *Handler {
+func New(log *slog.Logger, service ShortenerService) *Handler {
 	h := &Handler{
 		mux:     http.NewServeMux(),
+		log:     log,
 		service: service,
 	}
 

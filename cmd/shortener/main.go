@@ -26,7 +26,7 @@ const (
 )
 
 const (
-	postgresConfig = "./config/postgres_test.yml"
+	postgresConfig = "./config/postgres.yml"
 	serverConfig   = "./config/server.yml"
 	loggerConfig   = "./config/logger.yml"
 	migrations     = "./migrations"
@@ -44,7 +44,7 @@ func main() {
 	}()
 
 	shortenerService := shortener.NewService(logger, repository)
-	application := setupApp(serverConfig, shortenerService)
+	application := setupApp(serverConfig, logger, shortenerService)
 
 	logger.Info("starting shortener service")
 	go application.MustStart()
@@ -57,9 +57,9 @@ func main() {
 	logger.Info("shortener service stopped")
 }
 
-func setupApp(configPath string, service handler.ShortenerService) *app.App {
+func setupApp(configPath string, log *slog.Logger, service handler.ShortenerService) *app.App {
 	cfg := config.MustConfig[app.Config](configPath)
-	h := handler.New(service)
+	h := handler.New(log, service)
 	return app.NewApp(cfg.Addr, h)
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/VoRaX00/shortener/internal/service/shortener"
 	"io/ioutil"
+	"log/slog"
 	"net/http"
 	"strings"
 )
@@ -31,16 +32,20 @@ func (h *Handler) getLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.log.Info("Getting link from shortener", "id", id)
 	link, err := h.service.GetLink(id)
 	if err != nil {
 		if errors.Is(err, shortener.ErrNotFound) {
+			h.log.Error("Unable to find link", slog.String("err", err.Error()))
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
+		h.log.Error("Unable to get link", slog.String("err", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	h.log.Info("Successfully got link from shortener", "link", link)
 	w.Header().Set("Location", link)
 	http.Redirect(w, r, link, http.StatusTemporaryRedirect)
 }
