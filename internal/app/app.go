@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 )
 
@@ -12,6 +13,7 @@ type Config struct {
 
 type App struct {
 	server *http.Server
+	log    *slog.Logger
 }
 
 func NewApp(addr string, handler http.Handler) *App {

@@ -11,18 +11,26 @@ import (
 	shortenerrepo "github.com/VoRaX00/shortener/internal/storage/postgres/shortener"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-const postgresConfig = "./config/postgres.yml"
-const serverConfig = "./config/server.yml"
+const (
+	envLocal = "local"
+	envDev   = "dev"
+	envProd  = "prod"
+)
+
+const (
+	postgresConfig = "./config/postgres.yml"
+	serverConfig   = "./config/server.yml"
+	loggerConfig   = "./config/logger.yml"
+)
 
 func main() {
-	//if err := godotenv.Load(); err != nil {
-	//	panic(err)
-	//}
+	logger := setupLogger(loggerConfig)
 
 	repository := setupPostgres(postgresConfig)
 	defer func() {
@@ -32,15 +40,18 @@ func main() {
 		}
 	}()
 
-	shortenerService := shortener.NewService(repository)
+	shortenerService := shortener.NewService(logger, repository)
 	application := setupApp(serverConfig, shortenerService)
 
+	logger.Info("starting shortener service")
 	go application.MustStart()
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
+	logger.Info("shortener service shutting down")
 	application.MustStop(context.Background())
+	logger.Info("shortener service stopped")
 }
 
 func setupApp(configPath string, service handler.ShortenerService) *app.App {
@@ -62,4 +73,26 @@ func setupPostgres(configPath string) *shortenerrepo.Repository {
 
 	repo := shortenerrepo.NewRepository(db)
 	return repo
+}
+
+func setupLogger(configPath string) *slog.Logger {
+	cfg := config.MustConfig[config.Logger](configPath)
+
+	var logger *slog.Logger
+
+	switch cfg.Env {
+	case envProd:
+		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelInfo,
+		}))
+	case envLocal:
+		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+	case envDev:
+		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+	}
+	return logger
 }

@@ -6,8 +6,8 @@ import (
 	"os"
 )
 
-type ServerConfig struct {
-	addr string `yaml:"addr" env-required:"true"`
+type Logger struct {
+	Env string `yaml:"env"`
 }
 
 func MustConfig[T any](path string) T {
