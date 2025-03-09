@@ -9,8 +9,10 @@ import (
 	"github.com/VoRaX00/shortener/internal/service/shortener"
 	"github.com/VoRaX00/shortener/internal/storage/postgres"
 	shortenerrepo "github.com/VoRaX00/shortener/internal/storage/postgres/shortener"
+	_ "github.com/VoRaX00/shortener/migrations"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -27,6 +29,7 @@ const (
 	postgresConfig = "./config/postgres_test.yml"
 	serverConfig   = "./config/server.yml"
 	loggerConfig   = "./config/logger.yml"
+	migrations     = "./migrations"
 )
 
 func main() {
@@ -62,12 +65,15 @@ func setupApp(configPath string, service handler.ShortenerService) *app.App {
 
 func setupPostgres(configPath string) *shortenerrepo.Repository {
 	cfg := config.MustConfig[postgres.Config](configPath)
-	//cfg.Password = os.Getenv("POSTGRES_PASSWORD")
 
 	db, err := sqlx.Open("postgres",
 		fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 			cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database, cfg.SSLMode))
 	if err != nil {
+		panic(err)
+	}
+
+	if err = goose.Up(db.DB, migrations); err != nil {
 		panic(err)
 	}
 
