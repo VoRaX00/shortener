@@ -26,6 +26,13 @@ func main() {
 	}
 
 	repository := setupPostgres(postgresConfig)
+	defer func() {
+		err := repository.Stop()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
+
 	shortenerService := shortener.NewService(repository)
 	application := setupApp(serverConfig, shortenerService)
 

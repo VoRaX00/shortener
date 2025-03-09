@@ -46,3 +46,11 @@ func (r *Repository) Get(id string) (string, error) {
 
 	return link, err
 }
+
+func (r *Repository) Stop() error {
+	err := r.db.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+}
