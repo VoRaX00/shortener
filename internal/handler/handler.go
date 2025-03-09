@@ -8,13 +8,15 @@ type Handler struct {
 }
 
 func New(service ShortenerService) *Handler {
-	return &Handler{
+	h := &Handler{
 		mux:     http.NewServeMux(),
 		service: service,
 	}
+
+	h.mux.HandleFunc("/", h.mainPage)
+	return h
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.mux.HandleFunc("/", h.mainPage)
 	h.mux.ServeHTTP(w, r)
 }
