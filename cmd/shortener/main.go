@@ -10,7 +10,6 @@ import (
 	"github.com/VoRaX00/shortener/internal/storage/postgres"
 	shortenerrepo "github.com/VoRaX00/shortener/internal/storage/postgres/shortener"
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"os"
 	"os/signal"
@@ -21,9 +20,9 @@ const postgresConfig = "./config/postgres.yml"
 const serverConfig = "./config/server.yml"
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
+	//if err := godotenv.Load(); err != nil {
+	//	panic(err)
+	//}
 
 	repository := setupPostgres(postgresConfig)
 	defer func() {
@@ -52,7 +51,7 @@ func setupApp(configPath string, service handler.ShortenerService) *app.App {
 
 func setupPostgres(configPath string) *shortenerrepo.Repository {
 	cfg := config.MustConfig[postgres.Config](configPath)
-	cfg.Password = os.Getenv("POSTGRES_PASSWORD")
+	//cfg.Password = os.Getenv("POSTGRES_PASSWORD")
 
 	db, err := sqlx.Open("postgres",
 		fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
