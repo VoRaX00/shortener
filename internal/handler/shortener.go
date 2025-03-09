@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"github.com/VoRaX00/shortener/internal/service/shortener"
 	"io/ioutil"
 	"log/slog"
@@ -67,9 +68,10 @@ func (h *Handler) shortener(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	shortLink := fmt.Sprintf("http://%s/%s", r.Host, id)
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusCreated)
-	_, err = w.Write([]byte(id))
+	_, err = w.Write([]byte(shortLink))
 	if err != nil {
 		return
 	}
