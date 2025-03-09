@@ -12,7 +12,7 @@ func init() {
 
 func upLinks(ctx context.Context, tx *sql.Tx) error {
 	query := `CREATE TABLE IF NOT EXISTS links (
-    	id UUID PRIMARY KEY NOT NULL,
+    	id TEXT PRIMARY KEY NOT NULL,
     	link TEXT NOT NULL UNIQUE
 	)`
 

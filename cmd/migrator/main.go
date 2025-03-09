@@ -5,17 +5,15 @@ import (
 	"fmt"
 	"github.com/VoRaX00/shortener/internal/config"
 	_ "github.com/VoRaX00/shortener/migrations"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	"os"
 )
 
 type PgConfig struct {
 	Host           string `yaml:"host"`
 	Port           int    `yaml:"port"`
 	Username       string `yaml:"user"`
-	Password       string
+	Password       string `yaml:"password"`
 	Database       string `yaml:"dbname"`
 	SSLMode        string `yaml:"ssl_mode"`
 	IsDrop         bool   `yaml:"is_drop"`
@@ -25,12 +23,12 @@ type PgConfig struct {
 const postgresConfigPath = "./cmd/migrator/postgres.yml"
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
+	//if err := godotenv.Load(); err != nil {
+	//	panic(err)
+	//}
 
 	cfg := config.MustConfig[PgConfig](postgresConfigPath)
-	cfg.Password = os.Getenv("POSTGRES_PASSWORD")
+	//cfg.Password = os.Getenv("POSTGRES_PASSWORD")
 
 	db, err := sql.Open("postgres",
 		fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
