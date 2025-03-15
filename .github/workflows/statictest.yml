@@ -25,7 +25,7 @@ jobs:
 
       - name: Setup autotest binary
         run: |
-          chmod -R +x $GITHUB_WORKSPACE/.tools/statictest
+          chmod -R +x $GITHUB_WORKSPACE/.tools/statictest 
           mv $GITHUB_WORKSPACE/.tools/statictest /usr/local/bin/statictest
       - name: Check Go version
         run: go version

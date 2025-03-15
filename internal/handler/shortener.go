@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+//go:generate mockery --name=ShortenerService --output=./mocks --case=underscore
 type ShortenerService interface {
 	Shorten(url string) (string, error)
 	GetLink(id string) (string, error)
