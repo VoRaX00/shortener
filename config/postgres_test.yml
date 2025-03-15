@@ -1,0 +1,6 @@
+host: "postgres"
+port: 5432
+user: "postgres"
+password: "postgres"
+dbname: "praktikum"
+ssl_mode: "disable"

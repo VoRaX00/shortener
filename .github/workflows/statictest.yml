@@ -9,7 +9,7 @@ on:
 jobs:
   statictest:
     runs-on: ubuntu-latest
-    container: golang:1.24
+    container: golang:1.24.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,6 +27,8 @@ jobs:
         run: |
           chmod -R +x $GITHUB_WORKSPACE/.tools/statictest
           mv $GITHUB_WORKSPACE/.tools/statictest /usr/local/bin/statictest
+      - name: Check Go version
+        run: go version
 
       - name: Run statictest
         run: |
