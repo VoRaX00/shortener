@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/VoRaX00/shortener/internal/service/shortener"
-	"io/ioutil"
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
 )
 
+//go:generate mockery --name=ShortenerService --output=./mocks --case=underscore
 type ShortenerService interface {
 	Shorten(url string) (string, error)
 	GetLink(id string) (string, error)
@@ -55,7 +56,7 @@ func (h *Handler) shortener(w http.ResponseWriter, r *http.Request) {
 	body := r.Body
 	defer body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(body)
+	bodyBytes, err := io.ReadAll(body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
