@@ -11,6 +11,7 @@ var (
 	ErrNotFound = errors.New("shortener: not found")
 )
 
+//go:generate mockery --name=Repository --output=./mocks --case=underscore
 type Repository interface {
 	Add(link string) (string, error)
 	Get(id string) (string, error)
